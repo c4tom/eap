@@ -22,12 +22,11 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.xts">
+<module xmlns="urn:jboss:module:1.3" name="org.jboss.xts">
 
     <resources>
-        <resource-root path="jbossxts-4.17.29.Final-redhat-1.jar"/>
-        <resource-root path="jbosstxbridge-4.17.29.Final-redhat-1.jar"/>
-        <!-- Insert resources here -->
+        <resource-root path="jbossxts-5.2.16.Final-redhat-1.jar"/>
+        <resource-root path="jbosstxbridge-5.2.16.Final-redhat-1.jar"/>
     </resources>
 
     <dependencies>
@@ -53,5 +52,24 @@
         <module name="javax.annotation.api"/>
         <!-- this is needed to ensure the JaxWS endpoint classes canb refer to HttpServletRequest etc -->
         <module name="javax.servlet.api"/>
+        <module name="javax.ejb.api" />
+        <module name="org.jboss.jts" />
+        <module name="javax.xml.ws.api" />
+        <module name="org.jboss.weld.api" />
+        <module name="org.jboss.weld.core" />
+        <module name="javax.enterprise.api"/>
+        <module name="javax.transaction.api" />
+        <module name="org.jboss.logging" />
+        <module name="org.jboss.narayana.compensations" export="true" />
+        <module name="org.jboss.narayana.txframework" export="true" />
+        <module name="javax.annotation.api"  export="true" />
+        <module name="javax.interceptor.api"  export="true" />
+        <module name="org.jboss.weld.spi" />
+
+        <!-- TODO WFLY-5966 validate the need for these and remove if not needed.
+             Prior to WFLY-5922 they were exported by javax.ejb.api. -->
+        <module name="javax.xml.rpc.api"/>
+        <module name="javax.rmi.api"/>
+        <module name="org.omg.api"/>
     </dependencies>
 </module>

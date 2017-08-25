@@ -22,8 +22,8 @@ setlocal EnableDelayedExpansion
 rem check for the security manager system property
 echo(!SERVER_OPTS! | findstr /r /c:"-Djava.security.manager" > nul
 if not errorlevel == 1 (
-    echo WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable.
-    set SECMGR=true
+    echo ERROR: The use of -Djava.security.manager has been removed. Please use the -secmgr command line argument or SECMGR=true environment variable.
+    GOTO :EOF
 )
 setlocal DisableDelayedExpansion
 
@@ -62,8 +62,12 @@ pushd "%JBOSS_HOME%"
 set "SANITIZED_JBOSS_HOME=%CD%"
 popd
 
-if "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
-    echo WARNING JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
+if /i "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
+   echo.
+   echo   WARNING:  JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
+   echo.
+   echo       JBOSS_HOME: "%JBOSS_HOME%"
+   echo.
 )
 
 set DIRNAME=
@@ -87,8 +91,8 @@ if not errorlevel == 1 (
 
 rem If the -Djava.security.manager is found, enable the -secmgr and include a bogus security manager for JBoss Modules to replace
 echo(%JAVA_OPTS% | findstr /r /c:"-Djava.security.manager" > nul && (
-    echo WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable.
-    set SECMGR=true
+    echo ERROR: The use of -Djava.security.manager has been removed. Please use the -secmgr command line argument or SECMGR=true environment variable.
+    GOTO :EOF
 )
 
 rem Find run.jar, or we can't continue
@@ -119,7 +123,6 @@ if "%SECMGR%" == "true" (
     -jar "%JBOSS_HOME%\jboss-modules.jar" ^
     %MODULE_OPTS% ^
     -mp "%JBOSS_MODULEPATH%" ^
-    -jaxpmodule "javax.xml.jaxp-provider" ^
      org.jboss.as.appclient ^
     "-Djboss.home.dir=%JBOSS_HOME%" ^
     "-Djboss.server.base.dir=%JBOSS_HOME%\appclient" ^

@@ -22,23 +22,19 @@ set "RESOLVED_JBOSS_HOME=%CD%"
 popd
 
 if "x%JBOSS_HOME%" == "x" (
-  set "JBOSS_HOME=%RESOLVED_JBOSS_HOME%" 
+  set "JBOSS_HOME=%RESOLVED_JBOSS_HOME%"
 )
 
 pushd "%JBOSS_HOME%"
 set "SANITIZED_JBOSS_HOME=%CD%"
 popd
 
-if "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
-    echo WARNING JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
-)
-
-set DIRNAME=
-
-if "%OS%" == "Windows_NT" (
-  set "PROGNAME=%~nx0%"
-) else (
-  set "PROGNAME=jdr.bat"
+if /i "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
+   echo.
+   echo   WARNING: The JBOSS_HOME ^("%SANITIZED_JBOSS_HOME%"^) that this script uses points to a different installation than the one that this script resides in ^("%RESOLVED_JBOSS_HOME%"^). Unpredictable results may occur.
+   echo.
+   echo       JBOSS_HOME: "%JBOSS_HOME%"
+   echo.
 )
 
 rem Setup JBoss specific properties
@@ -59,11 +55,9 @@ if exist "%JBOSS_HOME%\jboss-modules.jar" (
   goto END
 )
 
-rem Setup JBoss specific properties
-
 rem Set default module root paths
 if "x%JBOSS_MODULEPATH%" == "x" (
-  set  "JBOSS_MODULEPATH=%JBOSS_HOME%\modules"
+  set "JBOSS_MODULEPATH=%JBOSS_HOME%\modules"
 )
 
 rem Uncomment to override standalone and domain user location

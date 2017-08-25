@@ -27,7 +27,7 @@
            xmlns="urn:jboss:domain:logging:1.5"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified"
-           version="1.4">
+           version="1.5">
 
     <!-- The logging subsystem root element -->
     <xs:element name="subsystem" type="subsystem"/>

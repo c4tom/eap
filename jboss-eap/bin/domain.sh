@@ -11,12 +11,12 @@ MAX_FD="maximum"
 while [ "$#" -gt 0 ]
 do
     case "$1" in
-      -Djava.security.manager*)
-          echo "WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable."
-          SECMGR="true"
-          ;;
       -secmgr)
           SECMGR="true"
+          ;;
+      -Djava.security.manager=*)
+          echo "ERROR: The use of -Djava.security.manager has been removed. Please use the -secmgr command line argument or SECMGR=true environment variable."
+          exit 1
           ;;
       *)
           SERVER_OPTS="$SERVER_OPTS '$1'"
@@ -24,7 +24,6 @@ do
     esac
     shift
 done
-
 
 # OS specific support (must be 'true' or 'false').
 cygwin=false;
@@ -194,7 +193,12 @@ if $darwin || $other ; then
              JBOSS_BASE_DIR=`cd ${p#*=} ; pwd -P`
              ;;
         -Djboss.domain.log.dir=*)
-             JBOSS_LOG_DIR=`cd ${p#*=} ; pwd -P`
+             if [ -d "${p#*=}" ]; then
+                JBOSS_LOG_DIR=`cd ${p#*=} ; pwd -P`
+             else
+                #since the specified directory doesn't exist we don't validate it
+                JBOSS_LOG_DIR=${p#*=}
+             fi
              ;;
         -Djboss.domain.config.dir=*)
              JBOSS_CONFIG_DIR=`cd ${p#*=} ; pwd -P`
@@ -234,9 +238,8 @@ fi
 # Note that HOST_CONTROLLER_JAVA_OPTS will not need to be handled here
 SECURITY_MANAGER_SET=`echo $PROCESS_CONTROLLER_JAVA_OPTS | $GREP "java\.security\.manager"`
 if [ "x$SECURITY_MANAGER_SET" != "x" ]; then
-    PROCESS_CONTROLLER_JAVA_OPTS="-Djava.security.manager=org.jboss.modules._private.StartupSecurityManager $PROCESS_CONTROLLER_JAVA_OPTS -Djava.security.manager=org.jboss.modules._private.StartupSecurityManager"
-    echo "WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable."
-    SECMGR="true"
+    echo "ERROR: The use of -Djava.security.manager has been removed. Please use the -secmgr command line argument or SECMGR=true environment variable."
+    exit 1
 fi
 
 # Set up the module arguments

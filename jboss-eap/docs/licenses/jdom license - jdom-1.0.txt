@@ -1,6 +1,6 @@
 /*-- 
 
- $Id: jdom-1.0.txt 36572 2010-12-15 22:00:55Z pgier $
+ $Id$
 
  Copyright (C) 2000-2004 Jason Hunter & Brett McLaughlin.
  All rights reserved.

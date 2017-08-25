@@ -8,9 +8,19 @@ MAX_FD="maximum"
 
 # OS specific support (must be 'true' or 'false').
 cygwin=false;
+darwin=false;
+linux=false;
 case "`uname`" in
     CYGWIN*)
         cygwin=true
+        ;;
+
+    Darwin*)
+        darwin=true
+        ;;
+
+    Linux)
+        linux=true
         ;;
 esac
 
@@ -64,12 +74,9 @@ fi
 
 CLASSPATH=$JAVA_HOME/lib/jconsole.jar
 CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
-CLASSPATH="$CLASSPATH:$JBOSS_HOME/bin/client/jboss-cli-client.jar"
+CLASSPATH=$CLASSPATH:./bin/client/jboss-cli-client.jar
 
 echo CLASSPATH $CLASSPATH
 
-if [ "x$JBOSS_MODULEPATH" = "x" ]; then
-    JBOSS_MODULEPATH="$JBOSS_HOME/modules"
-fi
-
-$JAVA_HOME/bin/jconsole -J-Djava.class.path="$CLASSPATH" -J-Dmodule.path="$JBOSS_MODULEPATH" "$@"
+cd "$JBOSS_HOME"
+$JAVA_HOME/bin/jconsole -J-Djava.class.path="$CLASSPATH" "$@"

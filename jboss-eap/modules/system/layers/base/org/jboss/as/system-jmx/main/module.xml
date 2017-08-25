@@ -22,14 +22,14 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.system-jmx">
-    <properties>
-        <property name="jboss.api" value="preview"/>
-    </properties>
+<module xmlns="urn:jboss:module:1.3" name="org.jboss.as.system-jmx">
+
+    <exports>
+        <exclude path="org/jboss/system/logging"/>
+    </exports>
 
     <resources>
-        <resource-root path="jboss-as-system-jmx-7.5.0.Final-redhat-21.jar"/>
-        <!-- Insert resources here -->
+        <resource-root path="wildfly-system-jmx-7.0.0.GA-redhat-2.jar"/>
     </resources>
 
     <dependencies>
@@ -38,12 +38,10 @@
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.as.controller"/>
         <module name="org.jboss.as.server"/>
-        <module name="org.jboss.as.ee"/>
         <module name="org.jboss.as.jmx"/>
         <module name="org.jboss.modules"/>
         <module name="org.jboss.msc"/>
         <module name="org.jboss.logging"/>
         <module name="org.jboss.vfs"/>
-        <module name="org.jboss.metadata"/>
     </dependencies>
 </module>
