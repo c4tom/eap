@@ -20,28 +20,18 @@ pushd "%DIRNAME%.."
 set "RESOLVED_JBOSS_HOME=%CD%"
 popd
 
-if "x%JBOSS_HOME%" == "x" (
-  set "JBOSS_HOME=%RESOLVED_JBOSS_HOME%"
-)
 
-pushd "%JBOSS_HOME%"
-set "SANITIZED_JBOSS_HOME=%CD%"
-popd
-
-if "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
-    echo WARNING JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
-)
 
 setlocal EnableDelayedExpansion
 rem check for the security manager system property
 echo(!SERVER_OPTS! | findstr /r /c:"-Djava.security.manager" > nul
 if not errorlevel == 1 (
-    echo WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable.
-	set SECMGR=true
+    echo ERROR: The use of -Djava.security.manager has been removed. Please use the -secmgr command line argument or SECMGR=true environment variable.
+    GOTO :EOF
 )
 setlocal DisableDelayedExpansion
 
-rem Read command-line args, the ~ removes the quotes from the parameter
+rem Read command-line args.
 :READ-ARGS
 if "%~1" == "" (
    goto MAIN
@@ -53,6 +43,21 @@ goto READ-ARGS
 
 :MAIN
 
+if "x%JBOSS_HOME%" == "x" (
+  set "JBOSS_HOME=%RESOLVED_JBOSS_HOME%"
+)
+
+pushd "%JBOSS_HOME%"
+set "SANITIZED_JBOSS_HOME=%CD%"
+popd
+
+if /i "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
+   echo.
+   echo   WARNING:  JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
+   echo.
+   echo       JBOSS_HOME: "%JBOSS_HOME%"
+   echo.
+)
 
 rem Read an optional configuration file.
 if "x%DOMAIN_CONF%" == "x" (
@@ -115,15 +120,15 @@ set logDirFound=false
 for %%a in (!CONSOLIDATED_OPTS!) do (
    if !baseDirFound! == true (
       set "JBOSS_BASE_DIR=%%~a"
-	  set baseDirFound=false
+      set baseDirFound=false
    )
    if !configDirFound! == true (
       set "JBOSS_CONFIG_DIR=%%~a"
-	  set configDirFound=false
+      set configDirFound=false
    )
    if !logDirFound! == true (
       set "JBOSS_LOG_DIR=%%~a"
-	  set logDirFound=false
+      set logDirFound=false
    )
    if "%%~a" == "-Djboss.domain.base.dir" (
        set baseDirFound=true
@@ -138,12 +143,10 @@ for %%a in (!CONSOLIDATED_OPTS!) do (
 
 rem If the -Djava.security.manager is found, enable the -secmgr and include a bogus security manager for JBoss Modules to replace
 echo(!PROCESS_CONTROLLER_JAVA_OPTS! | findstr /r /c:"-Djava.security.manager" > nul && (
-  set "PROCESS_CONTROLLER_JAVA_OPTS=-Djava.security.manager=org.jboss.modules._private.StartupSecurityManager !PROCESS_CONTROLLER_JAVA_OPTS! -Djava.security.manager=org.jboss.modules._private.StartupSecurityManager"
-  echo WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable.
-  set SECMGR=true
+  echo "ERROR: Support for using -Djava.security.manager has been removed. Please use -secmgr or set the environment variable SECMGR=true"
+  GOTO :EOF
 )
 setlocal DisableDelayedExpansion
-
 
 rem Setup JBoss specific properties
 

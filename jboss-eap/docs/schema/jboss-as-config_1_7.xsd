@@ -307,7 +307,7 @@
             <xs:annotation>
                 <xs:documentation>
                     A space seaparated list of URLs that this connection will handle referrals for.
-                    
+
                     Note: Only the prototocol, host and port should be specified in the URLs.  The LDAP connections are not ordered so a single URL should only
                     be listed against a single connection, if multpile connections are defined as handling the same URL which connection will be selected is undefined
                     and subject to change.
@@ -975,7 +975,7 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-	   		</xs:extension>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 

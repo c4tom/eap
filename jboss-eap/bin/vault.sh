@@ -24,9 +24,14 @@ die() {
 
 # OS specific support (must be 'true' or 'false').
 cygwin=false;
+darwin=false;
 case "`uname`" in
     CYGWIN*)
         cygwin=true
+        ;;
+
+    Darwin*)
+        darwin=true
         ;;
 esac
 

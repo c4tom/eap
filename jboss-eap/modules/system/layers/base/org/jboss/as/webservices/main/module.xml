@@ -22,15 +22,18 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.webservices">
+<module xmlns="urn:jboss:module:1.3" name="org.jboss.as.webservices">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
 
+    <exports>
+        <exclude path="org/jboss/as/webservices/logging"/>
+    </exports>
+
     <resources>
-        <resource-root path="jboss-as-webservices-server-integration-7.5.0.Final-redhat-21.jar"/>
-        <resource-root path="jbossws-cxf-resources-4.3.4.Final-redhat-1-jboss720.jar"/>
-        <!-- Insert resources here -->
+        <resource-root path="wildfly-webservices-server-integration-7.0.0.GA-redhat-2.jar"/>
+        <resource-root path="jbossws-cxf-resources-5.1.3.SP1-redhat-1-wildfly1000.jar"/>
     </resources>
 
     <dependencies>
@@ -43,24 +46,36 @@
         <module name="org.jboss.ejb3"/>
         <module name="org.jboss.invocation"/>
         <module name="org.jboss.jandex"/>
-        <module name="org.jboss.metadata"/>
+        <module name="org.jboss.metadata.common"/>
+        <module name="org.jboss.metadata.web"/>
+        <module name="org.jboss.metadata.ear"/>
+        <module name="org.jboss.metadata.ejb"/>
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.as.controller"/>
         <module name="org.jboss.as.ejb3"/>
         <module name="org.jboss.as.server"/>
         <module name="org.jboss.as.ee"/>
         <module name="org.jboss.as.naming"/>
+        <module name="org.jboss.as.network"/>
         <module name="org.jboss.as.security"/>
-        <module name="org.jboss.as.web"/>
+        <module name="org.wildfly.security.elytron"/>
+        <module name="org.jboss.as.web-common"/>
         <module name="org.jboss.threads"/>
         <module name="org.jboss.modules"/>
         <module name="org.jboss.msc"/>
         <module name="org.jboss.vfs"/>
         <module name="org.jboss.logging"/>
-        <module name="org.jboss.common-core" />
         <module name="org.jboss.ws.api" />
         <module name="org.jboss.ws.common" services="import" />
         <module name="org.jboss.ws.spi" />
         <module name="org.picketbox" />
+        <module name="org.wildfly.extension.undertow" />
+
+        <!-- TODO WFLY-5966 validate the need for these and remove if not needed.
+             Prior to WFLY-5922 they were exported by javax.ejb.api. -->
+        <module name="javax.transaction.api"/>
+        <module name="javax.xml.rpc.api"/>
+        <module name="javax.rmi.api"/>
+        <module name="org.omg.api"/>
     </dependencies>
 </module>

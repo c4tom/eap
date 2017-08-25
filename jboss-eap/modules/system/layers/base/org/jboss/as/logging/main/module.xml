@@ -22,22 +22,21 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.logging">
+<module xmlns="urn:jboss:module:1.3" name="org.jboss.as.logging">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
 
     <resources>
-        <resource-root path="jboss-as-logging-7.5.0.Final-redhat-21.jar"/>
-        <!-- Insert resources here -->
+        <resource-root path="wildfly-logging-2.1.2.Final-redhat-1.jar"/>
     </resources>
 
     <dependencies>
         <module name="javax.api"/>
         <module name="org.apache.log4j"/>
         <module name="org.jboss.as.controller"/>
+        <module name="org.wildfly.security.elytron"/>
         <module name="org.jboss.as.server"/>
-        <module name="org.jboss.common-core"/>
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.msc"/>
         <module name="org.jboss.logging"/>

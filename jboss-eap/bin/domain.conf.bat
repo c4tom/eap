@@ -43,13 +43,10 @@ if not "x%JAVA_OPTS%" == "x" (
 )
 
 rem # JVM memory allocation pool parameters - modify as appropriate.
-set "JAVA_OPTS=-Xms64M -Xmx512M -XX:MaxPermSize=256M"
+set "JAVA_OPTS=-Xms64M -Xmx512M -XX:MaxMetaspaceSize=256m"
 
 rem # Prefer IPv4
 set "JAVA_OPTS=%JAVA_OPTS% -Djava.net.preferIPv4Stack=true"
-
-rem # Set the jboss.modules.policy-permissions property to true by default.
-set "JAVA_OPTS=%JAVA_OPTS%  -Djboss.modules.policy-permissions=true "
 
 rem # Make Byteman classes visible in all module loaders
 rem # This is necessary to inject Byteman rules into AS7 deployments
@@ -70,7 +67,7 @@ if "x%HOST_CONTROLLER_JAVA_OPTS%" == "x" (
   set "HOST_CONTROLLER_JAVA_OPTS=%JAVA_OPTS%"
 )
 
-rem Uncomment this to run with a security manager enabled
+rem # Uncomment this to run with a security manager enabled
 rem set "SECMGR=true"
 
 rem # Sample JPDA settings for remote socket debugging
@@ -80,4 +77,3 @@ rem set "HOST_CONTROLLER_JAVA_OPTS=%HOST_CONTROLLER_JAVA_OPTS% -agentlib:jdwp=tr
 rem # Sample JPDA settings for shared memory debugging
 rem set "PROCESS_CONTROLLER_JAVA_OPTS=%PROCESS_CONTROLLER_JAVA_OPTS% -agentlib:jdwp=transport=dt_shmem,address=jboss,server=y,suspend=n"
 rem set "HOST_CONTROLLER_JAVA_OPTS=%HOST_CONTROLLER_JAVA_OPTS% -agentlib:jdwp=transport=dt_shmem,address=jboss,server=y,suspend=n"
-

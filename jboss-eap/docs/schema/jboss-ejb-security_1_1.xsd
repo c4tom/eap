@@ -28,9 +28,8 @@
            xmlns:javaee="http://java.sun.com/xml/ns/javaee"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified"
-           version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://www.jboss.org/j2ee/schema/jboss-ejb3-spec-2_0.xsd">
-   <xs:import namespace="http://java.sun.com/xml/ns/javaee" schemaLocation="http://www.jboss.org/j2ee/schema/jboss-ejb3-spec-2_0.xsd"/>
+           version="1.1">
+   <xs:import namespace="http://java.sun.com/xml/ns/javaee"/>
 
    <xs:element name="security" type="securityType" substitutionGroup="javaee:assembly-descriptor-entry"/>
 
@@ -44,7 +43,7 @@
                     <xs:annotation>
                         <xs:documentation>
                             <![CDATA[
-                                    If a EJB is secured but certain methods haven't been marked with explicit roles or @PermitAll/@DenyAll
+                                    If an EJB is secured but certain methods haven't been marked with explicit roles or @PermitAll/@DenyAll
                                     then the EJB container uses this missing-method-permissions-deny-access element to decide whether or not
                                     access is allowed to such methods.
                                     Setting this element to true will prevent access to this by any role (i.e.

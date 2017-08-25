@@ -28,8 +28,12 @@ pushd "%JBOSS_HOME%"
 set "SANITIZED_JBOSS_HOME=%CD%"
 popd
 
-if "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
-    echo WARNING JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
+if /i "%RESOLVED_JBOSS_HOME%" NEQ "%SANITIZED_JBOSS_HOME%" (
+   echo.
+   echo   WARNING:  JBOSS_HOME may be pointing to a different installation - unpredictable results may occur.
+   echo.
+   echo       JBOSS_HOME: "%JBOSS_HOME%"
+   echo.
 )
 
 rem Setup JBoss specific properties
@@ -46,12 +50,11 @@ set "CLASSPATH=%CLASSPATH%;%JBOSS_HOME%\bin\client\jboss-cli-client.jar"
 
 rem echo %CLASSPATH%
 
-rem Set default module root paths
-if "x%JBOSS_MODULEPATH%" == "x" (
-  set  "JBOSS_MODULEPATH=%JBOSS_HOME%\modules"
+if "%*" == "" (
+    "%JAVA_HOME%\bin\jconsole.exe" "-J-Djava.class.path=%CLASSPATH%"
+) else (
+    "%JAVA_HOME%\bin\jconsole.exe" "-J-Djava.class.path=%CLASSPATH%" %*
 )
-
-"%JAVA_HOME%\bin\jconsole.exe" "-J-Djava.class.path=%CLASSPATH%" "-J-Dmodule.path=%JBOSS_MODULEPATH%"
 
 :END
 goto :EOF

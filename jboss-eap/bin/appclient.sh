@@ -12,9 +12,9 @@ do
       -secmgr)
           SECMGR="true"
           ;;
-      -Djava.security.manager*)
-          echo "WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable."
-          SECMGR="true"
+      -Djava.security.manager)
+          echo "ERROR: The use of -Djava.security.manager has been removed. Please use the -secmgr command line argument or SECMGR=true environment variable."
+          exit 1
           ;;
       --)
           shift
@@ -32,6 +32,7 @@ MAX_FD="maximum"
 # OS specific support (must be 'true' or 'false').
 cygwin=false;
 darwin=false;
+linux=false;
 case "`uname`" in
     CYGWIN*)
         cygwin=true
@@ -39,6 +40,10 @@ case "`uname`" in
 
     Darwin*)
         darwin=true
+        ;;
+
+    Linux)
+        linux=true
         ;;
 esac
 
@@ -129,8 +134,8 @@ fi
 # Process the JAVA_OPTS failing if the java.security.manager is set.
 SECURITY_MANAGER_SET=`echo $JAVA_OPTS | $GREP "java\.security\.manager"`
 if [ "x$SECURITY_MANAGER_SET" != "x" ]; then
-    echo "WARNING: The use of -Djava.security.manager has been deprecated. Please use the -secmgr command line argument or SECMGR=true environment variable."
-    SECMGR="true"
+    echo "ERROR: The use of -Djava.security.manager has been removed. Please use the -secmgr command line argument or SECMGR=true environment variable."
+    exit 1
 fi
 
 # Set up the module arguments
@@ -139,9 +144,7 @@ if [ "$SECMGR" = "true" ]; then
     MODULE_OPTS="-secmgr";
 fi
 
-
 CLASSPATH="$CLASSPATH:\""$JBOSS_HOME"\"/jboss-modules.jar"
-
 # Execute the JVM in the foreground
 eval \"$JAVA\" $JAVA_OPTS \
  -cp "$CLASSPATH" \
@@ -150,10 +153,9 @@ eval \"$JAVA\" $JAVA_OPTS \
  org.jboss.modules.Main \
  $MODULE_OPTS \
  -mp \""${JBOSS_MODULEPATH}"\" \
- -jaxpmodule javax.xml.jaxp-provider \
  org.jboss.as.appclient \
  -Djboss.home.dir=\""$JBOSS_HOME"\" \
  -Djboss.server.base.dir=\""$JBOSS_HOME"/appclient\" \
-  "$SERVER_OPTS"
+ "$SERVER_OPTS"
 JBOSS_STATUS=$?
 exit $JBOSS_STATUS

@@ -22,22 +22,26 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.jboss.as.jsf-injection">
+<module xmlns="urn:jboss:module:1.3" name="org.jboss.as.jsf-injection">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
 
     <resources>
-        <resource-root path="jboss-as-jsf-injection-7.5.0.Final-redhat-21.jar"/>
-        <!-- Insert resources here -->
+        <resource-root path="wildfly-jsf-injection-7.0.0.GA-redhat-2.jar"/>
+        <resource-root path="weld-core-jsf-2.3.3.Final-redhat-1.jar"/>
     </resources>
 
     <dependencies>
         <module name="com.sun.jsf-impl"/>
         <module name="javax.api"/>
-        <module name="org.jboss.as.web"/>
+        <module name="org.jboss.as.ee"/>
+        <module name="org.jboss.as.jsf"/>
+        <module name="org.jboss.as.web-common"/>
         <module name="javax.servlet.api"/>
+        <module name="javax.enterprise.api"/>
         <module name="org.jboss.logging"/>
+        <module name="org.jboss.weld.core"/>
 
         <!-- added this for MyFacesAnnotationProvider -->
         <module name="javax.faces.api"/>
