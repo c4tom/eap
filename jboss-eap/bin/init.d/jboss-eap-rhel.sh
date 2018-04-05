@@ -16,9 +16,13 @@
 [ -r /etc/java/java.conf ] && . /etc/java/java.conf
 export JAVA_HOME
 
+if [ -z "$JBOSS_NAME" ]; then
+  JBOSS_NAME='jboss-eap'
+fi
+
 # Load JBoss EAP init.d configuration.
 if [ -z "$JBOSS_CONF" ]; then
-	JBOSS_CONF="/etc/default/jboss-eap.conf"
+	JBOSS_CONF="/etc/default/$JBOSS_NAME.conf"
 fi
 
 [ -r "$JBOSS_CONF" ] && . "${JBOSS_CONF}"
@@ -26,17 +30,17 @@ fi
 # Set defaults.
 
 if [ -z "$JBOSS_HOME" ]; then
-	JBOSS_HOME=/opt/jboss-eap
+	JBOSS_HOME=/opt/$JBOSS_NAME
 fi
 export JBOSS_HOME
 
 if [ -z "$JBOSS_PIDFILE" ]; then
-	JBOSS_PIDFILE=/var/run/jboss-eap/jboss-eap.pid
+	JBOSS_PIDFILE=/var/run/jboss-eap/$JBOSS_NAME.pid
 fi
 export JBOSS_PIDFILE
 
 if [ -z "$JBOSS_CONSOLE_LOG" ]; then
-	JBOSS_CONSOLE_LOG=/var/log/jboss-eap/console.log
+	JBOSS_CONSOLE_LOG=/var/log/$JBOSS_NAME/console.log
 fi
 
 if [ -z "$STARTUP_WAIT" ]; then
@@ -48,7 +52,7 @@ if [ -z "$SHUTDOWN_WAIT" ]; then
 fi
 
 if [ -z "$JBOSS_LOCKFILE" ]; then
-	JBOSS_LOCKFILE=/var/lock/subsys/jboss-eap
+	JBOSS_LOCKFILE=/var/lock/subsys/$JBOSS_NAME
 fi
 
 # Startup mode of jboss-eap
@@ -74,7 +78,7 @@ else
 	JBOSS_MARKERFILE=$JBOSS_HOME/domain/tmp/startup-marker
 fi
 
-prog='jboss-eap'
+prog=$JBOSS_NAME
 currenttime=$(date +%s%N | cut -b1-13)
 
 start() {
@@ -100,7 +104,7 @@ start() {
 		if [ "$JBOSS_MODE" = "standalone" ]; then
 			if [ -r /etc/rc.d/init.d/functions ]; then
 			        cd $JBOSS_HOME
-				daemon --user $JBOSS_USER "LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG $JBOSS_OPTS &" >> $JBOSS_CONSOLE_LOG 2>&1
+				daemon --user $JBOSS_USER LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE "$JBOSS_SCRIPT -c $JBOSS_CONFIG $JBOSS_OPTS &" >> $JBOSS_CONSOLE_LOG 2>&1
 				cd -
 			else
 				su - $JBOSS_USER -c "cd $JBOSS_HOME; LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG $JBOSS_OPTS" >> $JBOSS_CONSOLE_LOG 2>&1 &
@@ -108,7 +112,7 @@ start() {
 		else
 			if [ -r /etc/rc.d/init.d/functions ]; then
 			        cd $JBOSS_HOME
-				daemon --user $JBOSS_USER "LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT --domain-config=$JBOSS_DOMAIN_CONFIG --host-config=$JBOSS_HOST_CONFIG $JBOSS_OPTS &" >> $JBOSS_CONSOLE_LOG 2>&1
+				daemon --user $JBOSS_USER LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE "$JBOSS_SCRIPT --domain-config=$JBOSS_DOMAIN_CONFIG --host-config=$JBOSS_HOST_CONFIG $JBOSS_OPTS &" >> $JBOSS_CONSOLE_LOG 2>&1
 				cd -
 			else
 				su - $JBOSS_USER -c "cd $JBOSS_HOME; LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT --domain-config=$JBOSS_DOMAIN_CONFIG --host-config=$JBOSS_HOST_CONFIG $JBOSS_OPTS" >> $JBOSS_CONSOLE_LOG 2>&1 &

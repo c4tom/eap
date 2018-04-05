@@ -21,12 +21,12 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.1" name="org.hibernate.search.serialization-avro">
+<module xmlns="urn:jboss:module:1.5" name="org.hibernate.search.serialization-avro">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
     <resources>
-        <resource-root path="hibernate-search-serialization-avro-5.5.2.Final-redhat-1.jar"/>
+        <resource-root path="hibernate-search-serialization-avro-5.5.8.Final-redhat-1.jar"/>
     </resources>
     <dependencies>
         <module name="org.hibernate.search.engine"/>

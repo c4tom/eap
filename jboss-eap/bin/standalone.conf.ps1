@@ -72,4 +72,7 @@ $JAVA_OPTS += "-Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS"
 # Uncomment this to run with a security manager enabled
 # $SECMGR=$true
 
-# $GC_LOG=$true
+# enable garbage collector log if not set in environment differently
+if (-Not(test-path env:GC_LOG )) {
+  $GC_LOG=$true
+}

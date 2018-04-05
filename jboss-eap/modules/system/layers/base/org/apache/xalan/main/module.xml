@@ -22,11 +22,11 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.3" name="org.apache.xalan">
+<module xmlns="urn:jboss:module:1.5" name="org.apache.xalan">
 
     <resources>
-        <resource-root path="serializer-2.7.1.redhat-10.jar"/>
-        <resource-root path="xalan-2.7.1.redhat-10.jar"/>
+        <resource-root path="serializer-2.7.1.redhat-11.jar"/>
+        <resource-root path="xalan-2.7.1.redhat-11.jar"/>
     </resources>
 
     <dependencies>

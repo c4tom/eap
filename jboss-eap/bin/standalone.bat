@@ -8,13 +8,14 @@ rem Usage : standalone.bat --debug
 rem         standalone.bat --debug 9797
 
 @if not "%ECHO%" == ""  echo %ECHO%
-@if "%OS%" == "Windows_NT" setlocal
+setlocal
 
 rem By default debug mode is disable.
 set DEBUG_MODE=false
-set DEBUG_PORT=8787
+set DEBUG_PORT_VAR=8787
 rem Set to all parameters by default
 set "SERVER_OPTS=%*"
+
 
 if NOT "x%DEBUG%" == "x" (
   set "DEBUG_MODE=%DEBUG%
@@ -59,7 +60,7 @@ set DEBUG_ARG="%2"
 if not %DEBUG_ARG% == "" (
    if x%DEBUG_ARG:-=%==x%DEBUG_ARG% (
       shift
-      set DEBUG_PORT=%DEBUG_ARG%
+      set DEBUG_PORT_VAR=%DEBUG_ARG%
    )
    shift
    goto READ-ARGS
@@ -100,12 +101,19 @@ if exist "%STANDALONE_CONF%" (
    echo Config file not found "%STANDALONE_CONF%"
 )
 
+if NOT "x%DEBUG_PORT%" == "x" (
+  set DEBUG_PORT_VAR=%DEBUG_PORT%
+)
+
+if NOT "x%GC_LOG%" == "x" (
+  set "GC_LOG=%GC_LOG%
+)
 
 rem Set debug settings if not already set
 if "%DEBUG_MODE%" == "true" (
    echo "%JAVA_OPTS%" | findstr /I "\-agentlib:jdwp" > nul
   if errorlevel == 1 (
-     set "JAVA_OPTS=%JAVA_OPTS% -agentlib:jdwp=transport=dt_socket,address=%DEBUG_PORT%,server=y,suspend=n"
+     set "JAVA_OPTS=%JAVA_OPTS% -agentlib:jdwp=transport=dt_socket,address=%DEBUG_PORT_VAR%,server=y,suspend=n"
   ) else (
      echo Debug already enabled in JAVA_OPTS, ignoring --debug argument
   )
@@ -124,8 +132,12 @@ if "x%JAVA_HOME%" == "x" (
   if not exist "%JAVA_HOME%" (
     echo JAVA_HOME "%JAVA_HOME%" path doesn't exist
     goto END
-  ) else (
-    echo Setting JAVA property to "%JAVA_HOME%\bin\java"
+   ) else (
+     if not exist "%JAVA_HOME%\bin\java.exe" (
+       echo "%JAVA_HOME%\bin\java.exe" does not exist
+       goto END_NO_PAUSE
+     )
+      echo Setting JAVA property to "%JAVA_HOME%\bin\java"
     set "JAVA=%JAVA_HOME%\bin\java"
   )
 )
@@ -140,6 +152,7 @@ if not "%PRESERVE_JAVA_OPTS%" == "true" (
     )
   )
 )
+
 
 rem Find jboss-modules.jar, or we can't continue
 if exist "%JBOSS_HOME%\jboss-modules.jar" (
@@ -208,26 +221,31 @@ if "x%JBOSS_CONFIG_DIR%" == "x" (
 )
 
 if not "%PRESERVE_JAVA_OPTS%" == "true" (
-  rem Add rotating GC logs, if supported, and not already defined
-  echo "%JAVA_OPTS%" | findstr /I "\-verbose:gc" > nul
-  if errorlevel == 1 (
-    rem Back up any prior logs
-    move /y "%JBOSS_LOG_DIR%\gc.log.0" "%JBOSS_LOG_DIR%\backupgc.log.0" > nul 2>&1
-    move /y "%JBOSS_LOG_DIR%\gc.log.1" "%JBOSS_LOG_DIR%\backupgc.log.1" > nul 2>&1
-    move /y "%JBOSS_LOG_DIR%\gc.log.2" "%JBOSS_LOG_DIR%\backupgc.log.2" > nul 2>&1
-    move /y "%JBOSS_LOG_DIR%\gc.log.3" "%JBOSS_LOG_DIR%\backupgc.log.3" > nul 2>&1
-    move /y "%JBOSS_LOG_DIR%\gc.log.4" "%JBOSS_LOG_DIR%\backupgc.log.4" > nul 2>&1
-    move /y "%JBOSS_LOG_DIR%\gc.log.*.current" "%JBOSS_LOG_DIR%\backupgc.log.current" > nul 2>&1
-    "%JAVA%" -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=3M -Xloggc:%XLOGGC% -XX:-TraceClassUnloading -version > nul 2>&1
-    if not errorlevel == 1 (
-      if not exist "%JBOSS_LOG_DIR" > nul 2>&1 (
-        mkdir "%JBOSS_LOG_DIR%"
-      )
-     set XLOGGC="%JBOSS_LOG_DIR%\gc.log"
-     set "JAVA_OPTS=-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=3M -XX:-TraceClassUnloading %JAVA_OPTS%"
+    if "%GC_LOG%" == "true" (
+      rem Add rotating GC logs, if supported, and not already defined
+      echo "%JAVA_OPTS%" | findstr /I "\-verbose:gc" > nul
+      if errorlevel == 1 (
+        rem Back up any prior logs
+        move /y "%JBOSS_LOG_DIR%\gc.log.1" "%JBOSS_LOG_DIR%\backupgc.log.1" > nul 2>&1
+        move /y "%JBOSS_LOG_DIR%\gc.log.0" "%JBOSS_LOG_DIR%\backupgc.log.0" > nul 2>&1
+        move /y "%JBOSS_LOG_DIR%\gc.log.2" "%JBOSS_LOG_DIR%\backupgc.log.2" > nul 2>&1
+        move /y "%JBOSS_LOG_DIR%\gc.log.3" "%JBOSS_LOG_DIR%\backupgc.log.3" > nul 2>&1
+        move /y "%JBOSS_LOG_DIR%\gc.log.4" "%JBOSS_LOG_DIR%\backupgc.log.4" > nul 2>&1
+        move /y "%JBOSS_LOG_DIR%\gc.log.*.current" "%JBOSS_LOG_DIR%\backupgc.log.current" > nul 2>&1
+
+        "%JAVA%" -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=3M -Xloggc:"%JBOSS_LOG_DIR%\gc.log" -XX:-TraceClassUnloading -version > nul 2>&1
+        if not errorlevel == 1 (
+          if not exist "%JBOSS_LOG_DIR" > nul 2>&1 (
+            mkdir "%JBOSS_LOG_DIR%"
+          )
+		set JAVA_OPTS=%JAVA_OPTS% -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -Xloggc:"%JBOSS_LOG_DIR%\gc.log" -XX:GCLogFileSize=3M -XX:-TraceClassUnloading
+        )
+       )
     )
-  )
 )
+
+
+
 
 rem Set the module options
 set "MODULE_OPTS="
@@ -249,18 +267,7 @@ echo ===========================================================================
 echo.
 
 :RESTART
-if x%XLOGGC% == x (
   "%JAVA%" %JAVA_OPTS% ^
-   "-Dorg.jboss.boot.log.file=%JBOSS_LOG_DIR%\server.log" ^
-   "-Dlogging.configuration=file:%JBOSS_CONFIG_DIR%/logging.properties" ^
-      -jar "%JBOSS_HOME%\jboss-modules.jar" ^
-      %MODULE_OPTS% ^
-      -mp "%JBOSS_MODULEPATH%" ^
-       org.jboss.as.standalone ^
-      "-Djboss.home.dir=%JBOSS_HOME%" ^
-       %SERVER_OPTS%
-) else (
-  "%JAVA%" -Xloggc:%XLOGGC% %JAVA_OPTS% ^
    "-Dorg.jboss.boot.log.file=%JBOSS_LOG_DIR%\server.log" ^
    "-Dlogging.configuration=file:%JBOSS_CONFIG_DIR%/logging.properties" ^
       -jar "%JBOSS_HOME%\jboss-modules.jar" ^
@@ -269,9 +276,10 @@ if x%XLOGGC% == x (
       org.jboss.as.standalone ^
       "-Djboss.home.dir=%JBOSS_HOME%" ^
       %SERVER_OPTS%
-)
 
-if ERRORLEVEL 10 goto RESTART
+if %errorlevel% equ 10 (
+	goto RESTART
+)
 
 :END
 if "x%NOPAUSE%" == "x" pause

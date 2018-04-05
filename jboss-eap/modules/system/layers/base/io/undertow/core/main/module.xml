@@ -20,9 +20,9 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<module xmlns="urn:jboss:module:1.3" name="io.undertow.core">
+<module xmlns="urn:jboss:module:1.5" name="io.undertow.core">
     <resources>
-        <resource-root path="undertow-core-1.3.21.Final-redhat-1.jar"/>
+        <resource-root path="undertow-core-1.4.18.Final-redhat-2.jar"/>
     </resources>
 
     <dependencies>
@@ -30,6 +30,7 @@
         <module name="org.jboss.xnio.nio" services="import"/>
         <module name="org.jboss.logging"/>
         <module name="javax.api"/>
+        <module name="org.wildfly.openssl" optional="true"/>
         <module name="sun.jdk"/>
             <system export="true">
                 <paths>

@@ -22,21 +22,20 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.3" name="org.wildfly.extension.security.manager">
+<module xmlns="urn:jboss:module:1.5" name="org.wildfly.extension.security.manager">
 
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
 
     <resources>
-        <resource-root path="wildfly-security-manager-7.0.0.GA-redhat-2.jar"/>
+        <resource-root path="wildfly-security-manager-3.0.10.Final-redhat-1.jar"/>
     </resources>
 
     <dependencies>
         <module name="org.jboss.as.controller"/>
         <module name="org.jboss.as.server"/>
         <module name="org.jboss.logging"/>
-        <module name="org.jboss.metadata.common"/>
         <module name="org.jboss.modules"/>
         <module name="org.jboss.msc"/>
         <module name="org.jboss.staxmapper"/>

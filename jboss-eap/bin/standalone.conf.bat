@@ -64,7 +64,18 @@ rem set "JAVA_OPTS=%JAVA_OPTS% -agentlib:jdwp=transport=dt_shmem,address=jboss,s
 rem # Use JBoss Modules lockless mode
 rem set "JAVA_OPTS=%JAVA_OPTS% -Djboss.modules.lockless=true"
 
+:JAVA_OPTS_SET
+
 rem # Uncomment this to run with a security manager enabled
 rem set "SECMGR=true"
 
-:JAVA_OPTS_SET
+rem # Uncomment to run server in debug mode
+rem set "DEBUG_MODE=true"
+rem set "DEBUG_PORT=8787"
+
+rem enable garbage collection logging if not set in environment differently
+if "x%GC_LOG%" == "x" (
+  set "GC_LOG=true"
+) else (
+  echo "GC_LOG set in environment to %GC_LOG%"
+)

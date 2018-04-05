@@ -24,7 +24,7 @@
 
 <module xmlns="urn:jboss:module:1.5" name="javax.transaction.api">
     <resources>
-        <resource-root path="jboss-transaction-api_1.2_spec-1.0.0.Final-redhat-1.jar">
+        <resource-root path="jboss-transaction-api_1.2_spec-1.0.1.Final-redhat-1.jar">
             <filter>
                 <exclude path="javax/transaction/xa"/>
             </filter>
